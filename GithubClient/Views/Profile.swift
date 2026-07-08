@@ -14,7 +14,7 @@ struct Profile: View {
                 Text("Julian Solorzano")
             }
             .navigationTitle("Desarrollador de Software")
-            .navigationBarTitleDisplayMode( .inline 
+            .navigationBarTitleDisplayMode( .inline )
         }
     }
 }

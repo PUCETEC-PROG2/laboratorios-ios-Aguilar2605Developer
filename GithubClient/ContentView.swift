@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct ContentView: View {
+    // Laboratorio 10: un único RepoViewModel compartido entre RepoList y RepoForm
+    // para que ambas pestañas vean y modifiquen la misma lista de repos.
+    @StateObject private var repoViewModel = RepoViewModel()
+
     var body: some View {
         TabView {
             RepoList()
@@ -25,6 +29,7 @@ struct ContentView: View {
                     Label("Perfil", systemImage: "person.crop.circle")
                 }
         }
+        .environmentObject(repoViewModel) // inyectamos el ViewModel a las vistas hijas
     }
 }
 
