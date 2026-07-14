@@ -1,0 +1,35 @@
+# Xcode
+# User settings
+xcuserdata/
+*.xcuserdatad
+*.xccheckout
+*.xcscmblueprint
+
+# Swift Package Manager artifacts
+.build/
+.swiftpm/
+Packages/
+GeneratedPluginRegistrants.swift
+
+# App Icon Cache
+*.appiconconvert
+
+# Derived Data / Build artifacts
+DerivedData/
+build/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Architecture logs
+*.skel
+
+# macOS and Editors temporary files
+.DS_Store
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

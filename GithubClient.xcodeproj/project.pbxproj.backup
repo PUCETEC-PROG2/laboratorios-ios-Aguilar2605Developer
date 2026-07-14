@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AC8906F53006C34900893896 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = AC8906F43006C34900893896 /* Alamofire */; };
+		AC8906F73006C34900893896 /* AlamofireDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = AC8906F63006C34900893896 /* AlamofireDynamic */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,11 +21,6 @@
 			path = GithubClient;
 			sourceTree = "<group>";
 		};
-		AC89075A3006C96000893896 /* Resources */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Resources;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +29,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AC8906F53006C34900893896 /* Alamofire in Frameworks */,
+				AC8906F73006C34900893896 /* AlamofireDynamic in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -42,7 +39,6 @@
 		AC1547452F16A0A300962CDB = {
 			isa = PBXGroup;
 			children = (
-				AC89075A3006C96000893896 /* Resources */,
 				AC1547502F16A0A300962CDB /* GithubClient */,
 				AC15474F2F16A0A300962CDB /* Products */,
 			);
@@ -73,7 +69,6 @@
 			);
 			fileSystemSynchronizedGroups = (
 				AC1547502F16A0A300962CDB /* GithubClient */,
-				AC89075A3006C96000893896 /* Resources */,
 			);
 			name = GithubClient;
 			packageProductDependencies = (

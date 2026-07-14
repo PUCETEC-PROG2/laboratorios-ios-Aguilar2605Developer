@@ -1,59 +1,54 @@
-
 import SwiftUI
 
 struct RepoForm: View {
-    @State private var repoName: String = ""
-    @State private var repoDescription: String = ""
-
+    @State private var name: String = ""
+    @State private var description: String = ""
+    
     var body: some View {
         NavigationStack {
-            VStack {
-                Spacer()
-                
-                TextField(
-                    "",
-                    text: $repoName,
-                    prompt: Text("Nombre del repositorio")
-                        .foregroundStyle(.black.opacity(0.4))
-                )
-                .textFieldStyle(.roundedBorder)
-                .padding(.vertical)
-
-                TextField(
-                    "",
-                    text: $repoDescription,
-                    prompt: Text("Descripción del repositorio")
-                        .foregroundStyle(.black.opacity(0.4))
-                )
-                .textFieldStyle(.roundedBorder)
-                .lineLimit(3...6)
-                .padding(.vertical)
-
-                HStack {
-                    Button(action: {
-                        print("Botón presionado")
-                    }) {
-                        Label("Cancelar", systemImage: "xmark.circle")
-                            .padding(.all, 4)
-                            .foregroundStyle(.red)
-                    }
-                    .buttonStyle(.bordered)
-                    .padding(.horizontal, 4)
-
-                    Button(action: {
-                        print("Botón presionado")
-                    }) {
-                        Label("Guardar", systemImage: "square.and.arrow.down")
-                            .padding(.all, 4)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .padding(.horizontal, 4)
+            VStack(spacing: 20) {
+                // Campos de entrada
+                VStack(spacing: 15) {
+                    TextField("Nombre del repositorio", text: $name)
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(10)
+                    
+                    TextField("Descripción", text: $description)
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(10)
                 }
-                .padding()
+                .padding(.horizontal)
                 
                 Spacer()
+                
+                // Botones horizontales
+                HStack(spacing: 15) {
+                    Button("Cancelar") {
+                        // Acción cancelar
+                        name = ""
+                        description = ""
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .foregroundColor(.red)
+                    .background(Color(.systemGray6))
+                    .cornerRadius(12)
+                    
+                    Button("Crear") {
+                        // Acción crear
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .foregroundColor(.white)
+                    .background(Color.blue)
+                    .cornerRadius(12)
+                }
+                .padding(.horizontal)
+                .padding(.bottom, 20)
             }
-            .navigationTitle("Formulario de repositorio")
+            .navigationTitle("Nuevo Repositorio")
             .navigationBarTitleDisplayMode(.inline)
         }
     }

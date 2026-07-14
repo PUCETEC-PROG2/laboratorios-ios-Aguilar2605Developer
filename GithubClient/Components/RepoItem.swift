@@ -1,42 +1,20 @@
-//
-//  RepoItem.swift
-//  GithubClient
-//
-//  Created by Usuario invitado on 7/7/26.
-//
 
 import SwiftUI
 
 struct RepoItem: View {
+    let repository: Repository
+
     var body: some View {
         HStack(alignment: .top) {
-            Image(uiImage: .githubLogo)
-                .resizable()
-                .frame(width: 80, height: 80)
-                .cornerRadius(8) 
+            Image(systemName: "folder.fill")
+                .resizable().frame(width: 50, height: 50)
+                .foregroundColor(.blue)
             
             VStack(alignment: .leading, spacing: 5) {
-                Text("Nombre del repositorio")
-                    .font(.title2)
-                    .bold()
-                Text("Lorem Ipsum dolor descripción del repositorio")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                HStack {
-                    Text("Lenguaje")
-                        .font(.caption)
-                    Spacer()
-                    Text("Swift")
-                        .font(.caption)
-                        .bold()
-                }
-                .padding(.top, 5)
+                Text(repository.name).font(.headline).bold()
+                Text(repository.description).font(.subheadline).foregroundColor(.secondary)
+                Text(repository.language).font(.caption).bold()
             }
-        }
-        .padding()
+        }.padding(.vertical, 5)
     }
-}
-
-#Preview {
-    RepoItem()
 }

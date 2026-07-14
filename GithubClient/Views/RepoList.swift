@@ -1,50 +1,55 @@
-//
-//  RepoList.swift
-//  GithubClient
-//
-//  Created by Usuario invitado on 7/7/26.
-//  Editado para el Laboratorio 10: ahora usa List dinámico + RepoViewModel
-//  en vez de 6 RepoItem() fijos.
-//
 
 import SwiftUI
 
 struct RepoList: View {
-    // ViewModel compartido, inyectado desde ContentView con .environmentObject
     @EnvironmentObject var viewModel: RepoViewModel
 
     var body: some View {
-        NavigationStack {
+        NavigationView {
             Group {
-                // Feedback visual: ProgressView solo en la carga inicial (lista vacía)
                 if viewModel.isLoading && viewModel.repos.isEmpty {
-                    ProgressView("Cargando repositorios...")
-                } else {
-                    // List dinámico recorriendo viewModel.repos, como pide el enunciado
-                    List(viewModel.repos) { repo in
-                        RepoRow(repo: repo) {
-                            // Acción del botón "eliminar" (si aplica) dentro de RepoRow
-                            viewModel.deleteRepo(repo)
+                    ProgressView("Cargando...")
+                } else if let error = viewModel.errorMessage, viewModel.repos.isEmpty {
+                    // Estado de error a pantalla completa (solo si no hay datos previos que mostrar)
+                    VStack(spacing: 16) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .font(.system(size: 40))
+                            .foregroundColor(.orange)
+                        Text(error)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(.secondary)
+                            .padding(.horizontal)
+                        Button("Reintentar") {
+                            viewModel.retry()
                         }
+                        .buttonStyle(.borderedProminent)
+                    }
+                    .padding()
+                } else {
+                    List(viewModel.repos) { repo in
+                        RepoRow(repo: repo)
+                    }
+                    // RECARGA MANUAL (Pull to Refresh)
+                    .refreshable {
+                        viewModel.load()
                     }
                 }
             }
             .navigationTitle("Repositorios")
-            .navigationBarTitleDisplayMode( .inline )
-            // Alert para mostrar errores que vengan del ViewModel
+            .onAppear {
+                if viewModel.repos.isEmpty { viewModel.load() }
+            }
+            // Alerta adicional para errores que ocurren teniendo ya datos cargados
+            // (ej. falla un refresh pero la lista anterior sigue visible)
             .alert("Error", isPresented: Binding(
-                get: { viewModel.error != nil },
-                set: { isPresented in if !isPresented { viewModel.error = nil } }
+                get: { viewModel.errorMessage != nil && !viewModel.repos.isEmpty },
+                set: { if !$0 { viewModel.errorMessage = nil } }
             )) {
-                Button("OK", role: .cancel) { }
+                Button("Reintentar") { viewModel.retry() }
+                Button("Cerrar", role: .cancel) { viewModel.errorMessage = nil }
             } message: {
-                Text(viewModel.error ?? "")
+                Text(viewModel.errorMessage ?? "")
             }
         }
     }
-}
-
-#Preview {
-    // Para el preview necesitamos inyectar un ViewModel de ejemplo
-    RepoList().environmentObject(RepoViewModel())
 }

@@ -1,72 +1,64 @@
-//
-//  RepoViewModel.swift
-//  GithubClient
-//
-//  Creado para el Laboratorio 10 - Diseño de UI con SwiftUI
-//  Maneja el estado compartido entre RepoList y RepoForm.
-//
 
 import Foundation
 
-// ObservableObject: permite que las vistas se redibujen automáticamente
-// cuando cambian repos, isLoading o error (gracias a @Published).
 class RepoViewModel: ObservableObject {
+    @Published var repos: [Repository] = []
+    @Published var user: User? = nil
+    @Published var errorMessage: String? = nil
+    @Published var isLoading: Bool = false
+    @Published var selectedTab: Int = 0
 
-    @Published var repos: [Repository] = []   // Lista de repos que muestra RepoList
-    @Published var isLoading: Bool = false     // Controla el ProgressView
-    @Published var error: String? = nil        // Mensaje mostrado en el Alert de error
-
-    init() {
-        cargarRepositoriosDePrueba()
-    }
-
-    // Simula una carga inicial (aquí luego se conectaría la API real de GitHub).
-    // Se usa DispatchQueue solo para simular el tiempo de espera de una red.
-    private func cargarRepositoriosDePrueba() {
+    func load() {
         isLoading = true
+        errorMessage = nil
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-            self.repos = [
-                Repository(name: "GithubClient",
-                           description: "App de ejemplo para consumir la API de GitHub",
-                           language: "Swift",
-                           isPrivate: false),
-                Repository(name: "Laboratorio9",
-                           description: "Corrección de errores en Profile.swift",
-                           language: "Swift",
-                           isPrivate: true),
-                Repository(name: "Laboratorio10",
-                           description: "Diseño de UI con SwiftUI",
-                           language: "Swift",
-                           isPrivate: false)
-            ]
-            self.isLoading = false
+        let group = DispatchGroup()
+
+        // 1. Cargar Repositorios
+        group.enter()
+        GitHubController.shared.getRepos(page: 1, perPage: 20) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    self?.repos = data
+                case .failure(let err):
+                    self?.errorMessage = self?.mensajeAmigable(para: err)
+                }
+                group.leave()
+            }
+        }
+
+        // 2. Cargar Perfil de Usuario
+        group.enter()
+        GitHubController.shared.getUser { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let user):
+                    self?.user = user
+                case .failure(let err):
+                    // No bloqueamos la carga de repos por esto, pero sí lo registramos
+                    print("No se pudo cargar el usuario: \(err.localizedDescription)")
+                }
+                group.leave()
+            }
+        }
+
+        // 3. Notificar cuando ambas terminen
+        group.notify(queue: .main) { [weak self] in
+            self?.isLoading = false
         }
     }
 
-    // Crea un nuevo repositorio a partir de los datos capturados en RepoForm.
-    func createRepo(name: String, description: String, isPrivate: Bool) {
-        // Validación mínima antes de "guardar"
-        guard !name.trimmingCharacters(in: .whitespaces).isEmpty else {
-            error = "El nombre del repositorio no puede estar vacío"
-            return
-        }
-
-        isLoading = true
-
-        // Simulamos una llamada asíncrona de creación (ej. POST a la API)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            let nuevoRepo = Repository(name: name,
-                                        description: description,
-                                        language: "Swift",
-                                        isPrivate: isPrivate)
-            self.repos.append(nuevoRepo)
-            self.isLoading = false
-        }
+    /// Alias explícito para reintentar tras un error (usado por el botón "Reintentar" en la UI)
+    func retry() {
+        load()
     }
 
-    // Elimina un repo de la lista. La usa el botón de acción de RepoRow.
-    func deleteRepo(_ repo: Repository) {
-        repos.removeAll { $0.id == repo.id }
+    private func mensajeAmigable(para error: Error) -> String {
+        let nsError = error as NSError
+        if nsError.code == NSURLErrorNotConnectedToInternet {
+            return "Sin conexión a internet. Verifica tu red e intenta de nuevo."
+        }
+        return "No se pudieron cargar los repositorios. \(error.localizedDescription)"
     }
 }

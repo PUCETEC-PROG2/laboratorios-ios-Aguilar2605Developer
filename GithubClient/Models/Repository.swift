@@ -1,18 +1,33 @@
-//
-//  Repository.swift
-//  GithubClient
-//
-//  Creado para el Laboratorio 10 - Diseño de UI con SwiftUI
-//
 
 import Foundation
 
-// Modelo de datos que representa un repositorio de GitHub.
-// Identifiable es necesario para poder usarlo directamente dentro de un List().
-struct Repository: Identifiable {
-    let id = UUID()          // Identificador único que pide List(viewModel.repos)
-    var name: String         // Nombre del repositorio
-    var description: String  // Descripción corta del repositorio
-    var language: String     // Lenguaje principal (ej. "Swift")
-    var isPrivate: Bool      // true = privado, false = público
+struct Repository: Identifiable, Codable {
+    let id: Int
+    var name: String
+    var description: String
+    var language: String
+    var isPrivate: Bool
+
+    enum CodingKeys: String, CodingKey {
+        case id, description, language
+        case name = "full_name"
+        case isPrivate = "private"
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(Int.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        description = try container.decodeIfPresent(String.self, forKey: .description) ?? "Sin descripción"
+        language = try container.decodeIfPresent(String.self, forKey: .language) ?? "N/A"
+        isPrivate = try container.decode(Bool.self, forKey: .isPrivate)
+    }
+
+    init(id: Int, name: String, description: String, language: String, isPrivate: Bool) {
+        self.id = id
+        self.name = name
+        self.description = description
+        self.language = language
+        self.isPrivate = isPrivate
+    }
 }
