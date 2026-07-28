@@ -7,7 +7,7 @@ class RepoViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var selectedTab: Int = 0
 
-    // MARK: - Lab 12: estado del formulario de creación
+    
     @Published var isSubmitting: Bool = false
     @Published var createErrorMessage: String? = nil
     @Published var didCreateSuccessfully: Bool = false
@@ -57,10 +57,7 @@ class RepoViewModel: ObservableObject {
         return "No se pudieron cargar los repositorios. \(error.localizedDescription)"
     }
 
-    // MARK: - Lab 12: crear repositorio
-
-    /// Valida el formulario localmente y, si todo está bien, llama a la API.
-    /// - Returns: true si pasó la validación local (útil si la vista quiere reaccionar).
+    
     @discardableResult
     func createRepo(name: String, description: String, isPrivate: Bool) -> Bool {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)

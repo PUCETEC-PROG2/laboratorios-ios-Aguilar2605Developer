@@ -20,7 +20,7 @@ struct RepoForm: View {
                             .autocapitalization(.none)
                             .disableAutocorrection(true)
 
-                        // Error de validación local, justo debajo del campo
+                        
                         if let error = viewModel.createErrorMessage {
                             Text(error)
                                 .font(.caption)

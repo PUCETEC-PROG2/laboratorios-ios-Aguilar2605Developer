@@ -51,7 +51,7 @@ struct Profile: View {
                         Spacer()
                     }
                 } else {
-                    // Sin datos y sin estar cargando: probablemente falló la petición
+                    
                     VStack(spacing: 16) {
                         Image(systemName: "person.crop.circle.badge.exclamationmark")
                             .font(.system(size: 40))

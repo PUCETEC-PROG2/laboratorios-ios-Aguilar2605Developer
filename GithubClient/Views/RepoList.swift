@@ -10,7 +10,7 @@ struct RepoList: View {
                 if viewModel.isLoading && viewModel.repos.isEmpty {
                     ProgressView("Cargando...")
                 } else if let error = viewModel.errorMessage, viewModel.repos.isEmpty {
-                    // Estado de error a pantalla completa (solo si no hay datos previos que mostrar)
+                    
                     VStack(spacing: 16) {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .font(.system(size: 40))
@@ -39,8 +39,7 @@ struct RepoList: View {
             .onAppear {
                 if viewModel.repos.isEmpty { viewModel.load() }
             }
-            // Alerta adicional para errores que ocurren teniendo ya datos cargados
-            // (ej. falla un refresh pero la lista anterior sigue visible)
+            
             .alert("Error", isPresented: Binding(
                 get: { viewModel.errorMessage != nil && !viewModel.repos.isEmpty },
                 set: { if !$0 { viewModel.errorMessage = nil } }
